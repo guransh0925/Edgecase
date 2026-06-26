@@ -1,13 +1,50 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
-generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
-}
-
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           Int          @id @default(autoincrement())
+  username     String       @unique
+  email        String       @unique
+  passwordHash String
+  role         String       @default("user") // "user" or "admin"
+  submissions  Submission[]
+}
+
+model Problem {
+  id           Int          @id @default(autoincrement())
+  title        String
+  description  String       // Markdown text
+  timeLimitMs  Int          @default(2000)
+  memLimitMb   Int          @default(256)
+  testCases    TestCase[]
+  submissions  Submission[]
+}
+
+model TestCase {
+  id        Int     @id @default(autoincrement())
+  problemId Int
+  input     String
+  output    String
+  isHidden  Boolean @default(false)
+  problem   Problem @relation(fields: [problemId], references: [id])
+}
+
+model Submission {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  problemId  Int
+  code       String
+  language   String   // "c", "cpp", "python"
+  verdict    String   @default("PENDING")
+  runtimeMs  Int?
+  memoryKb   Int?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  problem    Problem  @relation(fields: [problemId], references: [id])
 }
