@@ -1,0 +1,28 @@
+===================================================================
+EDGECASE PROJECT DEPENDENCIES CHECKLIST
+===================================================================
+
+FRONTEND DEPENDENCIES (Navigate to /frontend and run: npm install)
+-------------------------------------------------------------------
+1. @monaco-editor/react    - In-browser code editor widget with syntax highlighting 
+2. allotment               - Resizable split-pane layout engine 
+3. react-markdown          - Component to render markdown problem descriptions 
+4. react-router-dom        - Controls multi-page routing navigation (/problems, etc.) 
+
+BACKEND DEPENDENCIES (Navigate to /backend and run: npm install)
+-------------------------------------------------------------------
+1. express                 - Minimalist API server routing framework 
+2. prisma                  - Next-generation Database ORM CLI engine 
+3. @prisma/client          - Automated type-safe query builder client for JavaScript 
+4. cors                    - Middleware to allow cross-origin browser communication 
+5. dotenv                  - Secure environment configuration file manager 
+6. jsonwebtoken            - Stateless user authentication signature security layer 
+7. bcrypt                  - Dynamic password hashing configuration library 
+
+DEVELOPMENT UTILITIES (Installed under backend devDependencies)
+-------------------------------------------------------------------
+1. tsx                     - Watch engine that auto-reloads the server on changes
+
+===================================================================
+SYSTEM REQUIREMENT: Docker Desktop (Required for Week 4 Judge Sandbox Execution) 
+===================================================================
