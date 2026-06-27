@@ -1,43 +1,44 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 function ProblemList() {
-  // Hardcoded fake problems for Week 2 [cite: 72, 86]
-  const dummyProblems = [
-    { id: 1, title: "Two Sum", difficulty: "Easy" },
-    { id: 2, title: "Reverse String", difficulty: "Easy" },
-    { id: 3, title: "Longest Palindromic Substring", difficulty: "Medium" }
-  ];
+  const [problems, setProblems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+
+    fetch(`${API_URL}/problems`)
+      .then((res) => res.json())
+      .then((data) => {
+        setProblems(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Database connection error:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div style={{ color: '#fff', padding: '40px', backgroundColor: '#1e1e1e', minHeight: '100vh' }}>Fetching problem catalog...</div>;
 
   return (
     <div style={{ padding: '40px', backgroundColor: '#1e1e1e', color: '#fff', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-      <h1>Problem Catalog</h1>
-      <div style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
-        <Link to="/login" style={{ color: '#0e639c' }}>Login</Link> | 
-        <Link to="/register" style={{ color: '#0e639c' }}>Register</Link>
-      </div>
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-        <thead>
-          <tr style={{ textAlign: 'left', borderBottom: '1px solid #3c3c3c' }}>
-            <th style={{ padding: '10px' }}>ID</th>
-            <th style={{ padding: '10px' }}>Title</th>
-            <th style={{ padding: '10px' }}>Difficulty</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dummyProblems.map(prob => (
-            <tr key={prob.id} style={{ borderBottom: '1px solid #2d2d2d' }}>
-              <td style={{ padding: '10px' }}>{prob.id}</td>
-              <td style={{ padding: '10px' }}>
-                {/* Dynamically link to the specific problem workspace ID [cite: 80] */}
-                <Link to={`/problems/${prob.id}`} style={{ color: '#58a6ff', textDecoration: 'none', fontWeight: 'bold' }}>
-                  {prob.title}
-                </Link>
-              </td>
-              <td style={{ padding: '10px', color: prob.difficulty === 'Easy' ? '#4caf50' : '#ff9800' }}>{prob.difficulty}</td>
-            </tr>
+      <h1 style={{ marginBottom: '20px', borderBottom: '1px solid #333', paddingBottom: '10px' }}>Problem Catalog</h1>
+      
+      {problems.length === 0 ? (
+        <p style={{ color: '#aaa' }}>No problems found in the database. Add some via Prisma Studio!</p>
+      ) : (
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
+          {problems.map((prob) => (
+            <li key={prob.id} style={{ margin: '15px 0', padding: '15px', backgroundColor: '#2d2d2d', borderRadius: '6px', border: '1px solid #444' }}>
+              <Link to={`/problems/${prob.id}`} style={{ color: '#61dafb', textDecoration: 'none', fontSize: '18px', fontWeight: 'bold', display: 'block' }}>
+                {prob.title} →
+              </Link>
+            </li>
           ))}
-        </tbody>
-      </table>
+        </ul>
+      )}
     </div>
   );
 }
